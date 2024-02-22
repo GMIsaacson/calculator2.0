@@ -1,22 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator 2.0</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Moved link tag inside head -->
-</head>
-<body>
-   
-    <nav>
-        <ul>
-            <li><a href="home.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </nav>
-    <h1>Calc</h1>
-    <section id="calculator-spaces">
+import React, { useState } from "react";
+import {
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Box,
+  Typography,
+  Grid,
+} from "@mui/material";
+
+import "./FractionCalculator.css";
+import "../fraction.css";
+import "./mixednumbers";
+import MixedNumberCalculator from "./mixednumbers";
+import FractionSimplifyCalculator from "./simplifyfraction";
+import BigFractionCalculator from "./bignumberfraction";
+import DecimalToFractionCalculator from "./decimaltofraction";
+
+function FractionCalculator() {
+  const [numerator1, setNumerator1] = useState("3");
+  const [denominator1, setDenominator1] = useState("5");
+  const [numerator2, setNumerator2] = useState("7");
+  const [denominator2, setDenominator2] = useState("9");
+  const [resultNumerator, setResultNumerator] = useState("");
+  const [resultDenominator, setResultDenominator] = useState("");
+  const [operator, setOperator] = useState("+"); // Default to addition
+
+  const calculate = () => {
+    // Parse input values as integers
+    const num1 = parseInt(numerator1, 10);
+    const den1 = parseInt(denominator1, 10);
+    const num2 = parseInt(numerator2, 10);
+    const den2 = parseInt(denominator2, 10);
+
+    let newNumerator, newDenominator;
+    if (operator === "+") {
+      // Addition
+      newNumerator = num1 * den2 + num2 * den1;
+      newDenominator = den1 * den2;
+    } else if (operator === "-") {
+      // Subtraction
+      newNumerator = num1 * den2 - num2 * den1;
+      newDenominator = den1 * den2;
+    } else if (operator === "*") {
+      // Multiplication
+      newNumerator = num1 * num2;
+      newDenominator = den1 * den2;
+    } else if (operator === "/") {
+      // Division
+      newNumerator = num1 * den2;
+      newDenominator = num2 * den1;
+    }
+
+    // Calculate the greatest common divisor (GCD) to simplify the result
+    const gcdResult = gcd(newNumerator, newDenominator);
+
+    // Simplify the result by dividing both numerator and denominator by GCD
+    setResultNumerator(newNumerator / gcdResult);
+    setResultDenominator(newDenominator / gcdResult);
+  };
+
+  // Function to calculate the greatest common divisor (GCD) using Euclidean algorithm
+  function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+  }
+
+  return (
+    <>
+      <section id="calculator-spaces">
         <h2> Fraction Calculator </h2>
         <p>
           At Calculator Spaces, we understand the importance of precision and
@@ -199,9 +252,8 @@
           your mathematical experience.
         </p>
       </section>
-    
-    
-    <script src="fractions.js"></script>
-</body>
-</html>
+    </>
+  );
+}
 
+export default FractionCalculator;
